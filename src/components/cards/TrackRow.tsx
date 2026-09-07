@@ -6,6 +6,7 @@ import { Colors, BorderRadius } from '../../constants/theme';
 import { Track } from '../../types/track';
 import { usePlayerStore } from '../../features/player/player-store';
 import { useHaptics } from '../../hooks/useHaptics';
+import { MiniWaveform } from '../atmosphere/MiniWaveform';
 
 interface TrackRowProps {
   track: Track;
@@ -44,12 +45,10 @@ export const TrackRow: React.FC<TrackRowProps> = ({
       {/* Index or Now Playing Indicator */}
       {index !== undefined && !showArtwork && (
         <View style={styles.indexCol}>
-          {isCurrent ? (
-            <Ionicons
-              name={isPlaying ? 'volume-high' : 'pause'}
-              size={18}
-              color={track.dominantColor || Colors.primary}
-            />
+          {isCurrent && isPlaying ? (
+            <MiniWaveform color={track.dominantColor || Colors.primary} isPlaying={isPlaying} />
+          ) : isCurrent ? (
+            <Ionicons name="pause" size={16} color={track.dominantColor || Colors.primary} />
           ) : (
             <Text style={styles.indexText}>{index + 1}</Text>
           )}
@@ -70,11 +69,7 @@ export const TrackRow: React.FC<TrackRowProps> = ({
           />
           {isCurrent && (
             <View style={styles.artworkOverlay}>
-              <Ionicons
-                name={isPlaying ? 'volume-high' : 'pause'}
-                size={16}
-                color="#FFFFFF"
-              />
+              <MiniWaveform color="#FFFFFF" isPlaying={isPlaying} />
             </View>
           )}
         </View>

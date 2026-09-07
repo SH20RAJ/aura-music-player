@@ -15,6 +15,8 @@ export interface PlayerState {
   isBuffering: boolean;
   isAuraQueue: boolean; // ✨ AURA Queue indicator
   activePlayerView: 'artwork' | 'lyrics' | 'visualizer';
+  playbackRate: number;
+  soundProfile: import('./audiophile').SoundProfile;
   
   // Actions
   play: () => Promise<void>;
@@ -32,6 +34,8 @@ export interface PlayerState {
   toggleRepeat: () => void;
   toggleShuffle: () => void;
   setVolume: (volume: number) => void;
+  setPlaybackRate: (rate: number) => void;
+  setSoundProfile: (profile: import('./audiophile').SoundProfile) => void;
   toggleFavorite: (trackId: string) => Promise<void>;
   setActivePlayerView: (view: 'artwork' | 'lyrics' | 'visualizer') => void;
   cyclePlayerView: () => void;

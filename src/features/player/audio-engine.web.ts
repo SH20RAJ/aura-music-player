@@ -92,6 +92,12 @@ class WebAudioEngine {
     }
   }
 
+  public setPlaybackRate(rate: number): void {
+    if (this.webAudio) {
+      this.webAudio.playbackRate = rate;
+    }
+  }
+
   public onStatusUpdate(cb: StatusCallback): () => void {
     this.statusListeners.add(cb);
     return () => this.statusListeners.delete(cb);

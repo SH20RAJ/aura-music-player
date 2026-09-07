@@ -9,17 +9,22 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import { Colors, BorderRadius } from '../../constants/theme';
 import { useLibraryStore } from '../../features/library/library-store';
 import { AnalyticsEngine } from '../../features/recommendations/analytics-engine';
 import { useHaptics } from '../../hooks/useHaptics';
+import { AuraRecapModal } from '../../components/profile/AuraRecapModal';
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const tracks = useLibraryStore((state) => state.tracks);
   const albums = useLibraryStore((state) => state.albums);
   const artists = useLibraryStore((state) => state.artists);
   const recentlyPlayed = useLibraryStore((state) => state.recentlyPlayed);
   const haptics = useHaptics();
+
+  const [showRecap, setShowRecap] = React.useState(false);
 
   const personality = AnalyticsEngine.calculateListeningPersonality(tracks, recentlyPlayed);
   const topArtist = AnalyticsEngine.getTopArtist(tracks);
@@ -30,6 +35,21 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        {/* Top Actions Row */}
+        <View style={styles.topActionsRow}>
+          <View />
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => {
+              haptics.selection();
+              router.push('/settings' as any);
+            }}
+            style={styles.settingsBtn}
+          >
+            <Ionicons name="settings-outline" size={22} color={Colors.text} />
+          </TouchableOpacity>
+        </View>
+
         {/* User Identity Banner */}
         <View style={styles.profileHeader}>
           <View style={styles.avatar}>
@@ -100,7 +120,10 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <TouchableOpacity
             activeOpacity={0.88}
-            onPress={() => haptics.medium()}
+            onPress={() => {
+              haptics.medium();
+              setShowRecap(true);
+            }}
             style={styles.recapCard}
           >
             <LinearGradient
@@ -110,15 +133,23 @@ export default function ProfileScreen() {
               end={{ x: 1, y: 1 }}
             />
             <View style={styles.recapInner}>
-              <Text style={styles.recapEyebrow}>COMING SOON</Text>
+              <View style={styles.recapTagRow}>
+                <Text style={styles.recapEyebrow}>INTERACTIVE STORY</Text>
+                <View style={styles.tapToOpenBadge}>
+                  <Text style={styles.tapToOpenText}>TAP TO EXPLORE ▶</Text>
+                </View>
+              </View>
               <Text style={styles.recapTitle}>Your 2026</Text>
               <Text style={styles.recapDesc}>
-                Your yearly sonic recap — every late night vibe, every pulse, uniquely visualised.
+                Your yearly sonic recap — explore your sonic footprint, top artist, and chromatic aura.
               </Text>
             </View>
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Interactive Story Recap Modal */}
+      <AuraRecapModal visible={showRecap} onClose={() => setShowRecap(false)} />
     </SafeAreaView>
   );
 }
@@ -297,22 +328,56 @@ const styles = StyleSheet.create({
   recapInner: {
     padding: 18,
   },
+  recapTagRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
   recapEyebrow: {
-    color: '#00DFD8',
+    color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 10,
     fontWeight: '800',
-    letterSpacing: 1.5,
-    marginBottom: 2,
+    letterSpacing: 1.2,
   },
   recapTitle: {
     color: '#FFFFFF',
     fontSize: 22,
     fontWeight: '900',
+    letterSpacing: -0.5,
     marginBottom: 4,
   },
   recapDesc: {
     color: 'rgba(255, 255, 255, 0.8)',
     fontSize: 12,
     lineHeight: 16,
+    fontWeight: '500',
+  },
+  tapToOpenBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.full,
+  },
+  tapToOpenText: {
+    color: '#FFFFFF',
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  topActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  settingsBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

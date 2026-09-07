@@ -196,6 +196,16 @@ class AudioEngine {
     }
   }
 
+  public setPlaybackRate(rate: number): void {
+    if (Platform.OS === 'web' && this.webAudio) {
+      this.webAudio.playbackRate = rate;
+      return;
+    }
+    if (this.player) {
+      this.player.setPlaybackRate(rate);
+    }
+  }
+
   public onStatusUpdate(cb: StatusCallback): () => void {
     this.statusListeners.add(cb);
     return () => this.statusListeners.delete(cb);

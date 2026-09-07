@@ -39,6 +39,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => {
     isBuffering: false,
     isAuraQueue: false,
     activePlayerView: 'artwork',
+    playbackRate: 1.0,
+    soundProfile: 'natural',
 
     play: async () => {
       const state = get();
@@ -227,6 +229,15 @@ export const usePlayerStore = create<PlayerState>((set, get) => {
       const order: ('artwork' | 'lyrics' | 'visualizer')[] = ['artwork', 'lyrics', 'visualizer'];
       const next = order[(order.indexOf(current) + 1) % order.length];
       set({ activePlayerView: next });
+    },
+
+    setPlaybackRate: (rate: number) => {
+      audioEngine.setPlaybackRate(rate);
+      set({ playbackRate: rate });
+    },
+
+    setSoundProfile: (profile: import('../../types/audiophile').SoundProfile) => {
+      set({ soundProfile: profile });
     },
   };
 });

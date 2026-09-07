@@ -86,17 +86,55 @@ Instead of a static list of songs, AURA asks: **"What's the vibe?"**
 ### 4. 🎨 Generative Playlists ("CREATE YOUR AURA")
 - Craft playlists with personality. AURA automatically generates vibrant, multi-stop gradient covers based on your selected mood palette.
 
-### 5. 📊 Listening Personality & Recap
+### 5. 📊 Listening Personality & Intelligence
 - Minimalist profile calculating:
   - Total songs, albums, and unique artists.
-  - Top Artist rotation.
+  - Top Artist rotation in your soundscape.
   - **Listening Personality**: Analyzes listening timestamps to calculate profiles (e.g. *Night Owl — Peak: 11:00 PM – 1:00 AM*, *Dawn Seeker*, *Sunset Cruiser*).
-  - *Your 2026* yearly listening recap teaser.
 
-### 6. 📱 Native Background Playback & Lock Screen
+### 6. 🧭 2D Vibe Radar
+- Continuous 2D mood radar across **Energy (Low ↔ High)** and **Mood (Chill ↔ Euphoric)** axes.
+- Drag or tap an interactive chromatic orb to navigate mood space and automatically filter and queue the most harmonious tracks in your collection.
+
+### 7. 🎛️ Audiophile Sound Lab & Presets
+- Granular tempo speed calibration: `0.5x`, `0.8x`, `1.0x`, `1.2x`, `1.5x`, `2.0x`.
+- 5 Studio Mastering sound profiles:
+  - 🎵 **AURA Reference** — Flat, transparent studio mastering curve.
+  - 🔊 **Sub-Bass Boost** — Deep low-end rumble for late night & synthwave.
+  - 🎙️ **Vocal Presence** — Crisp mid-range emphasis for soulful ballads.
+  - ⚡ **Electronic Pulse** — Punchy transients & sharp highs for dance.
+  - ☁️ **Acoustic Air** — Warm, airy separation for guitars and piano.
+- Instant header indicators in Full Player displaying active speed and EQ status.
+
+### 8. 🌙 Sleep Timer with Smooth Fade
+- Countdown options: `15 mins`, `30 mins`, `45 mins`, `1 hour`, or **End of Current Track**.
+- Built-in **45-second gradual volume fade** so playback gently dissolves into silence rather than cutting off abruptly.
+- Live countdown badge right in the player top bar (e.g. `14m`).
+
+### 9. 📊 Interactive 2026 Yearly Recap Story
+- Fullscreen, Instagram/Spotify Wrapped-style 4-slide interactive story.
+- Visual breakdown of your total listening footprint, top artist spotlight, and unique chromatic aura identity.
+- Native tap zones for next/previous slides with animated story progress indicators.
+
+### 10. ⚙️ Audio Settings & Library Storage Vault
+- **DAC Emulation & Hi-Res Mode** toggle for high bit-depth listening.
+- **Atmosphere Intensity Control** (*Subtle*, *Standard*, *Cinematic*).
+- **Archive Storage Breakdown** showing library size, cache size, and 1-tap cache cleaner.
+- **JSON Library Backup**: Export and import your entire collection, favorites, and playlists to JSON.
+
+### 11. ⌨️ Desktop Keyboard & Web Shortcuts
+- `Space` — Toggle Play / Pause.
+- `ArrowRight` / `ArrowLeft` — Next Track / Previous Track.
+- `ArrowUp` / `ArrowDown` — Increase / Decrease Volume.
+- `M` — Toggle Mute.
+- `L` — Cycle Player View (Artwork ↔ Lyrics ↔ Visualizer).
+- `F` — Toggle Favorite on current track.
+
+### 12. 📱 Native Background Playback & Lock Screen
 - Configured with `expo-audio` background playback service.
 - Lock screen media notifications with artwork, play, pause, previous, and skip controls.
 - Tactile feedback powered by `expo-haptics`.
+- Animated **Mini Waveform** equalizer bars dancing on actively playing songs.
 
 ---
 

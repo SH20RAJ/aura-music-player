@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Colors } from '../../constants/theme';
+import { Colors, BorderRadius } from '../../constants/theme';
 import { MOOD_CAPSULES } from '../../constants/moods';
 import { useLibraryStore } from '../../features/library/library-store';
 import { usePlayerStore } from '../../features/player/player-store';
@@ -22,6 +22,7 @@ import { SongActionSheet } from '../../components/player/SongActionSheet';
 import { Track, Album } from '../../types/track';
 import { MoodVibeKey } from '../../types/mood';
 import { useHaptics } from '../../hooks/useHaptics';
+import { VibeRadarModal } from '../../components/player/VibeRadarModal';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function HomeScreen() {
 
   const [activeMood, setActiveMood] = useState<MoodVibeKey | null>(null);
   const [selectedTrackForActions, setSelectedTrackForActions] = useState<Track | null>(null);
+  const [showVibeRadar, setShowVibeRadar] = useState(false);
 
   // Dynamic greeting based on user's current hour
   const getGreeting = () => {
@@ -93,9 +95,22 @@ export default function HomeScreen() {
           </TouchableOpacity>
 
           {/* YOUR AURA Mood Capsules */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionEyebrow}>AURA FLOW</Text>
-            <Text style={styles.sectionTitle}>Your Aura</Text>
+          <View style={styles.sectionHeaderRow}>
+            <View>
+              <Text style={styles.sectionEyebrow}>AURA FLOW</Text>
+              <Text style={styles.sectionTitle}>Your Aura</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => {
+                haptics.selection();
+                setShowVibeRadar(true);
+              }}
+              style={styles.vibeRadarBtn}
+            >
+              <Ionicons name="compass-outline" size={16} color="#00D2FF" style={{ marginRight: 5 }} />
+              <Text style={styles.vibeRadarBtnText}>Vibe Radar</Text>
+            </TouchableOpacity>
           </View>
 
           <ScrollView
@@ -168,6 +183,12 @@ export default function HomeScreen() {
         visible={!!selectedTrackForActions}
         track={selectedTrackForActions}
         onClose={() => setSelectedTrackForActions(null)}
+      />
+
+      {/* Vibe Radar 2D Modal */}
+      <VibeRadarModal
+        visible={showVibeRadar}
+        onClose={() => setShowVibeRadar(false)}
       />
     </View>
   );
@@ -243,6 +264,28 @@ const styles = StyleSheet.create({
   sectionHeader: {
     paddingHorizontal: 20,
     marginBottom: 12,
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    paddingHorizontal: 20,
+    marginBottom: 12,
+  },
+  vibeRadarBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 210, 255, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 210, 255, 0.3)',
+  },
+  vibeRadarBtnText: {
+    color: '#00D2FF',
+    fontSize: 12,
+    fontWeight: '700',
   },
   sectionEyebrow: {
     color: '#00D2FF',

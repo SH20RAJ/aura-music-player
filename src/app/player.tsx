@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,9 @@ import { ProgressBar } from '../components/player/ProgressBar';
 import { PlayerControls } from '../components/player/PlayerControls';
 import { QueueBottomSheet } from '../components/player/QueueBottomSheet';
 import { SongActionSheet } from '../components/player/SongActionSheet';
+import { SleepTimerModal } from '../components/player/SleepTimerModal';
+import { AudiophileModal } from '../components/player/AudiophileModal';
+import { sleepTimer } from '../features/player/sleep-timer';
 
 const { width, height } = Dimensions.get('window');
 
@@ -33,11 +36,25 @@ export default function FullPlayerScreen() {
   const toggleFavorite = usePlayerStore((state) => state.toggleFavorite);
   const next = usePlayerStore((state) => state.next);
   const previous = usePlayerStore((state) => state.previous);
+  const playbackRate = usePlayerStore((state) => state.playbackRate);
+  const soundProfile = usePlayerStore((state) => state.soundProfile);
   const { dominant, secondary } = useAtmosphereColor();
   const haptics = useHaptics();
 
   const [showQueueSheet, setShowQueueSheet] = useState(false);
   const [showActionSheet, setShowActionSheet] = useState(false);
+  const [showSleepModal, setShowSleepModal] = useState(false);
+  const [showAudiophileModal, setShowAudiophileModal] = useState(false);
+  const [sleepRemaining, setSleepRemaining] = useState(0);
+  const [isSleepActive, setIsSleepActive] = useState(false);
+
+  useEffect(() => {
+    const unsub = sleepTimer.onTick((remaining, active) => {
+      setSleepRemaining(remaining);
+      setIsSleepActive(active);
+    });
+    return unsub;
+  }, []);
 
   // Gesture handling for Swipes (Down to close, Left to next, Right to prev)
   const panResponder = useRef(
@@ -110,16 +127,64 @@ export default function FullPlayerScreen() {
             </Text>
           </View>
 
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => {
-              haptics.selection();
-              setShowActionSheet(true);
-            }}
-            style={styles.collapseBtn}
-          >
-            <Ionicons name="ellipsis-horizontal" size={22} color={Colors.text} />
-          </TouchableOpacity>
+          <View style={styles.headerRightActions}>
+            {/* Sleep Timer button */}
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                haptics.selection();
+                setShowSleepModal(true);
+              }}
+              style={[styles.headerIconBtn, isSleepActive && styles.activeHeaderBtn]}
+            >
+              <Ionicons
+                name={isSleepActive ? 'moon' : 'moon-outline'}
+                size={18}
+                color={isSleepActive ? '#7952FC' : Colors.textMuted}
+              />
+              {isSleepActive && (
+                <Text style={styles.headerBadgeText}>
+                  {Math.ceil(sleepRemaining / 60)}m
+                </Text>
+              )}
+            </TouchableOpacity>
+
+            {/* Audiophile Lab button */}
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                haptics.selection();
+                setShowAudiophileModal(true);
+              }}
+              style={[
+                styles.headerIconBtn,
+                (playbackRate !== 1.0 || soundProfile !== 'natural') && styles.activeHeaderBtn,
+              ]}
+            >
+              <Ionicons
+                name="hardware-chip-outline"
+                size={18}
+                color={playbackRate !== 1.0 || soundProfile !== 'natural' ? '#00D2FF' : Colors.textMuted}
+              />
+              {playbackRate !== 1.0 && (
+                <Text style={[styles.headerBadgeText, { color: '#00D2FF' }]}>
+                  {playbackRate}x
+                </Text>
+              )}
+            </TouchableOpacity>
+
+            {/* Song Actions Ellipsis */}
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                haptics.selection();
+                setShowActionSheet(true);
+              }}
+              style={styles.headerIconBtn}
+            >
+              <Ionicons name="ellipsis-horizontal" size={20} color={Colors.text} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Artwork Area (Tap to cycle: Artwork -> Lyrics -> Visualizer, Long press for actions) */}
@@ -217,6 +282,20 @@ export default function FullPlayerScreen() {
         track={currentTrack}
         onClose={() => setShowActionSheet(false)}
       />
+
+      {/* Sleep Timer Modal */}
+      <SleepTimerModal
+        visible={showSleepModal}
+        onClose={() => setShowSleepModal(false)}
+        accentColor={dominant}
+      />
+
+      {/* Audiophile Sound Lab Modal */}
+      <AudiophileModal
+        visible={showAudiophileModal}
+        onClose={() => setShowAudiophileModal(false)}
+        accentColor={dominant}
+      />
     </View>
   );
 }
@@ -248,6 +327,31 @@ const styles = StyleSheet.create({
   headerTitleCol: {
     alignItems: 'center',
     flex: 1,
+    paddingHorizontal: 6,
+  },
+  headerRightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  headerIconBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  activeHeaderBtn: {
+    backgroundColor: 'rgba(121, 82, 252, 0.18)',
+    borderWidth: 1,
+    borderColor: 'rgba(121, 82, 252, 0.4)',
+  },
+  headerBadgeText: {
+    color: '#7952FC',
+    fontSize: 10,
+    fontWeight: '800',
   },
   headerEyebrow: {
     color: Colors.textMuted,

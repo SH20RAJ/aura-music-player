@@ -6,10 +6,12 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Colors } from '../constants/theme';
 import { MiniPlayer } from '../components/player/MiniPlayer';
 import { useLibraryStore } from '../features/library/library-store';
+import { useWebShortcuts } from '../hooks/useWebShortcuts';
 
 export default function RootLayout() {
   const initializeLibrary = useLibraryStore((state) => state.initialize);
   const pathname = usePathname();
+  useWebShortcuts();
 
   useEffect(() => {
     initializeLibrary();
@@ -41,6 +43,7 @@ export default function RootLayout() {
           <Stack.Screen name="album/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="artist/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="playlist/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="settings" options={{ headerShown: false }} />
           <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         </Stack>
 
